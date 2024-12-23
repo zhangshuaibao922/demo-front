@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
-import type {UserInfo} from "@/requests/model/userInfo";
+import type {UserInfo} from "@/requests/model/userInfo.ts";
+
 
 export const useInfoStore = defineStore({
     id: 'useInfo',
