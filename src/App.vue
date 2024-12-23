@@ -1,16 +1,6 @@
 <template>
   <router-view class="router"/>
 </template>
-
-<style lang="scss">
-.router {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-</style>
 <script setup lang="ts">
 console.log("<!--\n" +
     " *                                                     __----~~~~~~~~~~~------___\n" +
@@ -36,3 +26,12 @@ console.log("<!--\n" +
     " *                               神兽保佑            永无BUG\n" +
     " -->")
 </script>
+<style lang="scss">
+.router {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+</style>
