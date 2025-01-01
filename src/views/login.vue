@@ -56,7 +56,6 @@ import { useInfoStore } from '@/stores/userStore.ts';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import {type Login, login_API} from "@/requests/login/login.ts"
-import type {User} from "@/requests/model/user.ts";
 
 const user = useInfoStore();
 const router = useRouter();
@@ -90,7 +89,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           user.setUserInfo(res.data.data);
           console.log(user);
           ElMessage.success("登录成功")
-          router.push('/welcome');
+          router.push('/home');
       }).catch((error: any) => {
         ElMessage.error("登陆失败，请检查账号密码")
         console.error("登录失败：", error);

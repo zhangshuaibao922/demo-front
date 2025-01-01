@@ -4,9 +4,11 @@
 
 <template>
 
-  <div class="welcom" style="width: 50px;height: 50px;color: #2c3e50">
 
+  <div class="page1" style="background-color: black;height: 100%;width: 100%">
+    123
   </div>
+
 </template>
 
 <style scoped lang="scss">
