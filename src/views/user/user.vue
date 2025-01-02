@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type {CreateOrUpdateTableRequestData, Field, Role, TableData} from "./type"
+import type {CreateOrUpdateTableRequestData, Field, Role, TableData} from "@/requests/user/type.ts"
 import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from "element-plus"
 import {
   createTableDataApi, deleteAllTableDataApi,
-  deleteTableDataApi,
+  deleteTableDataApi, getExcelApi,
   getFieldDataApi,
   getRoleDataApi,
   getTableDataApi,
   updateTableDataApi
-} from "./index.ts"
-import { usePagination } from "./usePagination"
+} from "@/requests/user"
+import { usePagination } from "@/requests/user/usePagination.ts"
 import { CirclePlus, Delete, Download, Refresh, RefreshRight, Search } from "@element-plus/icons-vue"
 import { cloneDeep } from "lodash-es"
 import {onMounted, reactive, ref, watch} from "vue";
@@ -190,6 +190,18 @@ const selectionTable = ref<TableData[]>([])
 function handleSelectionChange(selection: TableData[]) {
   selectionTable.value = selection;
 }
+const downloadExcel = async () => {
+  try {
+    await getExcelApi().then((res) => {
+      console.log(res.data.data)
+      window.open(res.data.data,'_blank');
+    }).catch((err) => {
+      ElMessage.error("下载失败")
+    })
+  } catch (error) {
+    ElMessage.error("下载失败")
+  }
+};
 // #endregion
 onMounted(async () => {
   await getField()
@@ -234,7 +246,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         </div>
         <div>
           <el-tooltip content="下载">
-            <el-button type="primary" :icon="Download" circle />
+            <el-button type="primary" :icon="Download" circle  @click="downloadExcel"/>
           </el-tooltip>
           <el-tooltip content="刷新当前页">
             <el-button type="primary" :icon="RefreshRight" circle @click="getTableData" />

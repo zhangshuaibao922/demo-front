@@ -1,4 +1,4 @@
-import type * as Table from "./type"
+import type * as Table from "./type.ts"
 import service from "@/requests/service.ts";
 
 /** 增 */
@@ -53,6 +53,12 @@ export function getFieldDataApi() {
 export function getRoleDataApi() {
   return service({
     url: "/role/all",
+    method: "get",
+  })
+}
+export function getExcelApi() {
+  return service({
+    url: "/oss/download-excel",
     method: "get",
   })
 }
