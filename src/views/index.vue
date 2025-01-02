@@ -25,17 +25,13 @@
             :default-openeds="['1']"
             border="false"
         >
-          <!-- SubMenu 示例 1 -->
           <el-sub-menu index="1">
             <template #title>
-              <el-icon><message /></el-icon>
-              <span>Navigator One</span>
+              <el-icon> <Notification/></el-icon>
+              <span>信息管理</span>
             </template>
-            <el-menu-item-group>
-              <template #title>Group One</template>
               <el-menu-item  @click="addTab(Tabs[0])">{{Tabs[0].title}}</el-menu-item>
               <el-menu-item @click="addTab(Tabs[1])">{{Tabs[1].title}}</el-menu-item>
-            </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
@@ -110,7 +106,7 @@ import Notify from "@/views/Notify/index.vue"
 import {ref, computed, reactive} from 'vue'
 import {
   Expand, Fold,
-  Message, UserFilled
+  Message, Notification, UserFilled
 } from '@element-plus/icons-vue'
 import { useInfoStore } from '@/stores/userStore.ts';
 import { useRouter } from 'vue-router';
@@ -138,7 +134,7 @@ let tabIndex = 1
 const editableTabsValue = ref('home')
 const Tabs = reactive<Tab[]>([
   {
-    title: '教师管理',
+    title: '人员管理',
     name: 'user',
     path:'/user'
   },
