@@ -28,7 +28,9 @@ const DEFAULT_FORM_DATA: CreateOrUpdateTableRequestData = {
   account: "",
   password: "",
   name: "",
+  email:"",
   fieldId: 0,
+  relationship: "",
   roleId: 0,
   old: 0,
   score: 0,
@@ -48,7 +50,7 @@ const rules = {
   name: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 2, max: 10, message: '用户名长度在2-10位之间', trigger: 'blur' },
-  ],
+  ]
 };
 function handleCreateOrUpdate() {
   formRef.value?.validate((valid) => {
@@ -212,7 +214,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
 </script>
 
 <template>
-  <div class="app-container" style="  padding: 20px;background-color: #f8f8f8">
+  <div class="app-container" style="  padding: 20px;background-color: #F5F5F5">
     <el-card v-loading="loading" shadow="never" class="search-wrapper">
       <el-form ref="searchFormRef" :inline="true" :model="searchData">
         <el-form-item prop="name" label="姓名">
@@ -256,8 +258,9 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
       <div class="table-wrapper">
         <el-table :data="tableData" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
+          <el-table-column prop="name" label="姓名" align="center" />
           <el-table-column prop="account" label="账号" align="center" />
-          <el-table-column prop="name" label="用户名" align="center" />
+          <el-table-column prop="email" label="邮箱" align="center" width="200" />
           <el-table-column prop="roleId" label="权限" align="center">
             <template #default="scope">
               <div v-if="findRoleName(scope.row.roleId)">
@@ -324,14 +327,17 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         @closed="resetForm"
     >
       <el-form ref="formRef" :model="formData"  label-width="100px" label-position="left"  :rules="rules">
+        <el-form-item prop="account" label="姓名">
+          <el-input v-model="formData.name" placeholder="请输入" />
+        </el-form-item>
         <el-form-item prop="account" label="账号">
           <el-input v-model="formData.account" placeholder="请输入" />
         </el-form-item>
         <el-form-item prop="password" label="密码">
           <el-input v-model="formData.password" placeholder="请输入" />
         </el-form-item>
-        <el-form-item prop="name" label="用户名">
-          <el-input v-model="formData.name" placeholder="请输入" />
+        <el-form-item prop="name" label="邮箱">
+          <el-input v-model="formData.email" placeholder="请输入" />
         </el-form-item>
         <el-form-item  prop="roleId" label="权限">
           <el-select

@@ -10,8 +10,8 @@ const router = createRouter({
       component: () => LoginView,
     },
     {
-      path: '/home',
-      name: 'home',
+      path: '/index',
+      name: 'index',
       component: () => import('../views/index.vue'),
       children: [
         {
@@ -20,9 +20,14 @@ const router = createRouter({
           component: () => import('../views/user/user.vue'),
         },
         {
-          path: '/page2',
-          name: 'page2',
-          component: () => import('../views/page2.vue'),
+          path: '/home',
+          name: 'home',
+          component: () => import('../views/home.vue'),
+        },
+        {
+          path: '/expert',
+          name: 'expert',
+          component: () => import('../views/expert.vue'),
         },
       ]
     },

@@ -3,7 +3,9 @@ export interface CreateOrUpdateTableRequestData {
   account: string
   password: string
   name: string
+  email:string
   fieldId: number
+  relationship: string
   roleId: number
   old: number
   score: number
@@ -16,7 +18,6 @@ export interface TableRequestData {
   size: number
   /** 查询参数：用户名 */
   name?: string
-  /** 查询参数：手机号 */
   fieldName?: string
   score?: string
 }
@@ -26,7 +27,9 @@ export interface TableData {
   account: string
   password: string
   name: string
+  email:string
   fieldId: number
+  relationship: string
   roleId: number
   old: number
   score: number

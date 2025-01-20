@@ -93,8 +93,11 @@
           >
           </el-tab-pane>
         </el-tabs>
-<!--        <el-divider style="margin: 1px" />-->
-        <router-view style="width: 100%;height: 100%;"/>
+<!--        todo 修改成用户名字-->
+        <el-watermark :font="font" :content="['Element']">
+          <!--        <el-divider style="margin: 1px" />-->
+          <router-view style="width: 100%;height: 100%;"/>
+        </el-watermark>
       </el-main>
     </el-container>
   </el-container>
@@ -139,9 +142,9 @@ const Tabs = reactive<Tab[]>([
     path:'/user'
   },
   {
-    title: 'Tab 2',
-    name: '2',
-    path:'/page2'
+    title: '标签管理',
+    name: 'expert',
+    path:'/expert'
   },
 ])
 const editableTabs=ref<Tab[]>([
@@ -194,6 +197,10 @@ const handleTabClick = (tabEvent:any) => {
   console.log(tab?.path);
   console.log(editableTabsValue.value);
 };
+
+const font = reactive({
+  color: 'rgba(0, 0, 0, .15)',
+})
 </script>
 
 <style scoped>
