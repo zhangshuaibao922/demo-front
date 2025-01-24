@@ -33,6 +33,13 @@
               <el-menu-item  @click="addTab(Tabs[0])">{{Tabs[0].title}}</el-menu-item>
               <el-menu-item @click="addTab(Tabs[1])">{{Tabs[1].title}}</el-menu-item>
           </el-sub-menu>
+          <el-sub-menu index="2">
+            <template #title>
+              <el-icon> <Notification/></el-icon>
+              <span>任务管理</span>
+            </template>
+            <el-menu-item  @click="addTab(Tabs[2])">{{Tabs[2].title}}</el-menu-item>
+          </el-sub-menu>
         </el-menu>
       </el-scrollbar>
     </el-aside>
@@ -145,6 +152,11 @@ const Tabs = reactive<Tab[]>([
     title: '标签管理',
     name: 'expert',
     path:'/expert'
+  },
+  {
+    title: '任务信息',
+    name: 'task',
+    path:'/task'
   },
 ])
 const editableTabs=ref<Tab[]>([
