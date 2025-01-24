@@ -45,9 +45,9 @@ const DEFAULT_FORM_DATA: CreateOrUpdateTableRequestData = {
   id: undefined,        // 主键，使用可选字段
   taskName: "",  // 任务名称
   conditionId:"",
-  siphonTime: "",  // 抽取时间，使用 ISO 格式的字符串
-  startTime: "",   // 开始评审时间，使用 ISO 格式的字符串
-  endTime: "",   // 结束时间，使用 ISO 格式的字符串
+  siphonTime: null,  // 抽取时间，使用 ISO 格式的字符串
+  startTime: null,   // 开始评审时间，使用 ISO 格式的字符串
+  endTime: null,   // 结束时间，使用 ISO 格式的字符串
   resultScore: 0, // 得分
   status: 1,     // 状态
 }
@@ -63,7 +63,7 @@ function handleCreateOrUpdate() {
       return
     }
     loading.value = true
-    const api = formData.value.id === undefined ? createTableDataApi : updateTableDataApi
+    const api =createTableDataApi ;
     api(formData.value).then(() => {
       ElMessage.success("操作成功")
       dialogVisible.value = false
@@ -126,7 +126,7 @@ function getTableData() {
     page: paginationData.currentPage,
     size: paginationData.pageSize,
     taskName: searchData.taskName || undefined,
-    score: searchData.status || undefined,
+    status: searchData.status || undefined,
   }).then((res) => {
     paginationData.total = res.data.data.total
     tableData.value = res.data.data.records
