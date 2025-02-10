@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import type {CreateOrUpdateTableRequestData, TableData} from "@/requests/task/type.ts"
 import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from "element-plus"
-import {createTableDataApi, getTableDataApi} from "@/requests/task/task.ts"
+import {createTableDataApi, deleteAllTableDataApi, deleteTableDataApi, getTableDataApi} from "@/requests/task/task.ts"
 import {usePagination} from "@/requests/user/usePagination.ts"
 import {CirclePlus, Delete, Download, Refresh, RefreshRight, Search} from "@element-plus/icons-vue"
 import {cloneDeep} from "lodash-es"
 import {onMounted, reactive, ref, watch} from "vue";
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
+import { taskInfoStore } from '@/stores/taskInfoStore.ts';
+const taskInfo=taskInfoStore();
 defineOptions({
   // 命名当前组件
   name: "Table",
@@ -15,10 +18,6 @@ defineOptions({
 const loading = ref<boolean>(false)
 const {paginationData, handleCurrentChange, handleSizeChange} = usePagination()
 const statusList = [
-  {
-    value: 0,
-    label: '已完成',
-  },
   {
     value: 1,
     label: '创建',
@@ -84,29 +83,29 @@ function resetForm() {
 
 // #region 删
 function handleDelete(row: TableData) {
-  // ElMessageBox.confirm(`正在删除用户：${row.name}，确认删除？`, "提示", {
-  //   confirmButtonText: "确定",
-  //   cancelButtonText: "取消",
-  //   type: "warning"
-  // }).then(() => {
-  //   deleteTableDataApi(row.id).then(() => {
-  //     ElMessage.success("删除成功")
-  //     getTableData()
-  //   })
-  // })
+  ElMessageBox.confirm(`正在删除任务：${row.taskName}，确认删除？`, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning"
+  }).then(() => {
+    deleteTableDataApi(row.id).then(() => {
+      ElMessage.success("删除成功")
+      getTableData()
+    })
+  })
 }
 
 function deleteAll() {
-  // ElMessageBox.confirm(`确认删除？`, "提示", {
-  //   confirmButtonText: "确定",
-  //   cancelButtonText: "取消",
-  //   type: "warning"
-  // }).then(() => {
-  //   deleteAllTableDataApi(selectionTable.value).then(() => {
-  //     ElMessage.success("删除成功")
-  //     getTableData()
-  //   })
-  // })
+  ElMessageBox.confirm(`确认删除？`, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning"
+  }).then(() => {
+    deleteAllTableDataApi(selectionTable.value).then(() => {
+      ElMessage.success("删除成功")
+      getTableData()
+    })
+  })
 }
 
 
@@ -143,10 +142,21 @@ function handleSearch() {
 }
 
 function resetSearch() {
+  searchData.taskName = ""
+  searchData.status=5
   searchFormRef.value?.resetFields()
   handleSearch()
 }
+// 根据 status 获取 label
+const getStatusLabel = (status: number) => {
+  const item = statusList.find(s => s.value === status);
+  return item ? item.label : '未知状态';
+};
 
+function pushTaskInfo(row: TableData){
+  taskInfo.setTaskInfo(row)
+  router.push('/taskinfo')
+}
 
 
 
@@ -156,41 +166,19 @@ function handleSelectionChange(selection: TableData[]) {
   selectionTable.value = selection;
 }
 
-const downloadExcel = async () => {
-  // try {
-  //   await getExcelApi().then((res) => {
-  //     console.log(res.data.data)
-  //     window.open(res.data.data,'_blank');
-  //   }).catch((err) => {
-  //     ElMessage.error("下载失败")
-  //   })
-  // } catch (error) {
-  //   ElMessage.error("下载失败")
-  // }
-};
+// const downloadExcel = async () => {
+//   // try {
+//   //   await getExcelApi().then((res) => {
+//   //     console.log(res.data.data)
+//   //     window.open(res.data.data,'_blank');
+//   //   }).catch((err) => {
+//   //     ElMessage.error("下载失败")
+//   //   })
+//   // } catch (error) {
+//   //   ElMessage.error("下载失败")
+//   // }
+// };
 
-const shortcuts = [
-  {
-    text: 'Today',
-    value: new Date(),
-  },
-  {
-    text: 'Yesterday',
-    value: () => {
-      const date = new Date()
-      date.setDate(date.getDate() - 1)
-      return date
-    },
-  },
-  {
-    text: 'A week ago',
-    value: () => {
-      const date = new Date()
-      date.setDate(date.getDate() - 7)
-      return date
-    },
-  },
-]
 // #endregion
 onMounted(async () => {
 
@@ -237,9 +225,9 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           </el-button>
         </div>
         <div>
-          <el-tooltip content="下载">
-            <el-button type="primary" :icon="Download" circle @click="downloadExcel"/>
-          </el-tooltip>
+<!--          <el-tooltip content="下载">-->
+<!--            <el-button type="primary" :icon="Download" circle @click="downloadExcel"/>-->
+<!--          </el-tooltip>-->
           <el-tooltip content="刷新当前页">
             <el-button type="primary" :icon="RefreshRight" circle @click="getTableData"/>
           </el-tooltip>
@@ -248,50 +236,36 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
       <div class="table-wrapper">
         <el-table :data="tableData" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column prop="taskName" width="100" label="任务名称" align="center"/>
-          <el-table-column label="资源" width="100" align="center">
-            <template #default="scope">
-              <el-button type="danger" text bg size="small" >
-                上传资源
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="siphonTime" label="抽取时间" align="right" width="150">
+          <el-table-column prop="taskName"  label="任务名称" align="center"/>
+          <el-table-column prop="siphonTime" label="抽取时间" align="center" >
             <template #default="scope">
               <el-text v-if="scope.row.status<=1" tag="b"  >{{scope.row.siphonTime}}</el-text>
               <el-text v-else tag="del">{{scope.row.siphonTime}}</el-text>
             </template>
           </el-table-column>
-          <el-table-column label="" align="left" width="100">
-            <template #default="scope">
-            <el-button :disabled="scope.row.status>1" type="danger" text bg size="small" >
-              抽取条件
-            </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="startTime" label="评审时间" align="center" width="150">
+          <el-table-column prop="startTime" label="评审时间" align="center" >
             <template #default="scope">
               <el-text v-if="scope.row.status<=2" tag="b">{{scope.row.startTime}}</el-text>
               <el-text v-else tag="del">{{ scope.row.startTime }}</el-text>
             </template>
           </el-table-column>
-          <el-table-column prop="endTime" label="结束时间" align="right" width="150">
+          <el-table-column prop="endTime" label="结束时间" align="center" >
             <template #default="scope">
               <el-text v-if="scope.row.status<=3">{{scope.row.startTime}}</el-text>
               <el-text v-else  tag="del">{{ scope.row.startTime }}</el-text>
             </template>
           </el-table-column>
-          <el-table-column label="" align="left" width="100">
+          <el-table-column prop="status" label="状态" align="center" >
             <template #default="scope">
-              <el-button :disabled="scope.row.status!=4" type="danger" text bg size="small" >
-                评审结果
-              </el-button>
+              <el-tag :type="'success'" effect="plain" disable-transitions>
+                {{ getStatusLabel(scope.row.status) }}
+              </el-tag>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="150" align="center">
+          <el-table-column fixed="right" label="操作" align="center">
             <template #default="scope">
-              <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)">
-                删除
+              <el-button type="primary" text bg size="small" @click="pushTaskInfo(scope.row)">
+                详情
               </el-button>
               <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)">
                 删除
@@ -329,7 +303,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               v-model="formData.siphonTime"
               type="datetime"
               placeholder="Select date and time"
-              :shortcuts="shortcuts"
               style="width: 310px"
               format="YYYY-MM-DD hh:mm:ss"
               value-format="YYYY-MM-DD hh:mm:ss"
@@ -340,7 +313,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               v-model="formData.startTime"
               type="datetime"
               placeholder="Select date and time"
-              :shortcuts="shortcuts"
               style="width: 310px"
               format="YYYY-MM-DD hh:mm:ss"
               value-format="YYYY-MM-DD hh:mm:ss"
@@ -351,7 +323,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               v-model="formData.endTime"
               type="datetime"
               placeholder="Select date and time"
-              :shortcuts="shortcuts"
               style="width: 310px"
               format="YYYY-MM-DD hh:mm:ss"
               value-format="YYYY-MM-DD hh:mm:ss"

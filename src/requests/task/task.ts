@@ -16,3 +16,18 @@ export function createTableDataApi(data: Table.CreateOrUpdateTableRequestData) {
         data
     })
 }
+/** 删 */
+export function deleteAllTableDataApi(data: Table.CreateOrUpdateTableRequestData[]) {
+    return service({
+        url: "/task/delete/all",
+        method: "post",
+        data
+    })
+}
+/** 删 */
+export function deleteTableDataApi(id: string) {
+    return service({
+        url: `/task/delete/${id}`,
+        method: "get"
+    })
+}
