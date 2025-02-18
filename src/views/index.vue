@@ -61,7 +61,7 @@
             <el-dropdown style="margin-left: 20px">
               <div>
                 <el-avatar :icon="UserFilled" :size="30" />
-                <span style="margin-left: 5px">王中王火腿肠</span>
+                <span style="margin-left: 5px">{{ userInfo.user.name }}</span>
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -101,7 +101,7 @@
           </el-tab-pane>
         </el-tabs>
 <!--        todo 修改成用户名字-->
-        <el-watermark :font="font" :content="['Element']">
+        <el-watermark :font="font" :content="[userInfo.user.name]">
           <!--        <el-divider style="margin: 1px" />-->
           <router-view style="width: 100%;height: 100%;"/>
         </el-watermark>
@@ -120,7 +120,7 @@ import {
 } from '@element-plus/icons-vue'
 import { useInfoStore } from '@/stores/userStore.ts';
 import { useRouter } from 'vue-router';
-const user = useInfoStore();
+const userInfo = useInfoStore();
 const router = useRouter();
 
 // 是否折叠侧边栏

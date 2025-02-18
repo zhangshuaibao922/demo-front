@@ -83,7 +83,7 @@ function resetForm() {
 
 // #region 删
 function handleDelete(row: TableData) {
-  ElMessageBox.confirm(`正在删除任务：${row.taskName}，确认删除？`, "提示", {
+  ElMessageBox.confirm(`正在删除任务：${row.taskName}以及对应的资源文件，确认删除？`, "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning"
@@ -257,7 +257,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           </el-table-column>
           <el-table-column prop="status" label="状态" align="center" >
             <template #default="scope">
-              <el-tag :type="'success'" effect="plain" disable-transitions>
+              <el-tag :type="'success'" effect="light" disable-transitions>
                 {{ getStatusLabel(scope.row.status) }}
               </el-tag>
             </template>
