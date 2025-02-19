@@ -1,3 +1,5 @@
+import type {ConditionType} from "@/views/taskinfo.vue";
+
 export interface resourceDto {
     id:string,
     taskId:string,
@@ -12,4 +14,11 @@ export interface resource {
     userId?:string,
     resourceType:string,
     resourceUrl:string
+}
+export interface condtion {
+    id?:string,
+    conditionId: string,
+    conditionName: ConditionType|null,
+    conditionIf: string,
+    conditionValue: string
 }
