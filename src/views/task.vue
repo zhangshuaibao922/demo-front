@@ -9,6 +9,7 @@ import {onMounted, reactive, ref, watch} from "vue";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 import { taskInfoStore } from '@/stores/taskInfoStore.ts';
+import dayjs from "dayjs";
 const taskInfo=taskInfoStore();
 defineOptions({
   // 命名当前组件
@@ -141,6 +142,9 @@ function handleSearch() {
   paginationData.currentPage === 1 ? getTableData() : (paginationData.currentPage = 1)
 }
 
+function  formatDate(timestamp:string) {
+  return dayjs(Number(timestamp)).format('YYYY-MM-DD HH:mm:ss')
+}
 function resetSearch() {
   searchData.taskName = ""
   searchData.status=5
@@ -218,7 +222,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
       <div class="toolbar-wrapper">
         <div>
           <el-button type="primary" :icon="CirclePlus" @click="dialogVisible = true">
-            新增用户
+            新增任务
           </el-button>
           <el-button type="danger" :icon="Delete" @click="deleteAll">
             批量删除
@@ -239,20 +243,20 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-table-column prop="taskName"  label="任务名称" align="center"/>
           <el-table-column prop="siphonTime" label="抽取时间" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=1" tag="b"  >{{scope.row.siphonTime}}</el-text>
-              <el-text v-else tag="del">{{scope.row.siphonTime}}</el-text>
+              <el-text v-if="scope.row.status<=1" tag="b"  >{{ formatDate(scope.row.siphonTime) }}</el-text>
+              <el-text v-else tag="del">{{ formatDate(scope.row.siphonTime) }}</el-text>
             </template>
           </el-table-column>
           <el-table-column prop="startTime" label="评审时间" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=2" tag="b">{{scope.row.startTime}}</el-text>
-              <el-text v-else tag="del">{{ scope.row.startTime }}</el-text>
+              <el-text v-if="scope.row.status<=2" tag="b">{{ formatDate(scope.row.startTime) }}</el-text>
+              <el-text v-else tag="del">{{ formatDate(scope.row.startTime) }}</el-text>
             </template>
           </el-table-column>
           <el-table-column prop="endTime" label="结束时间" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=3">{{scope.row.startTime}}</el-text>
-              <el-text v-else  tag="del">{{ scope.row.startTime }}</el-text>
+              <el-text v-if="scope.row.status<=3">{{ formatDate(scope.row.endTime) }}</el-text>
+              <el-text v-else  tag="del">{{ formatDate(scope.row.endTime) }}</el-text>
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" align="center" >
@@ -290,7 +294,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
     <!-- 新增/修改 -->
     <el-dialog
         v-model="dialogVisible"
-        :title="formData.id === undefined ? '新增用户' : '修改用户'"
+        :title="formData.id === undefined ? '新增任务' : '修改任务'"
         width="30%"
         @closed="resetForm"
     >
@@ -304,8 +308,8 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               type="datetime"
               placeholder="Select date and time"
               style="width: 310px"
-              format="YYYY-MM-DD hh:mm:ss"
-              value-format="YYYY-MM-DD hh:mm:ss"
+              format="YYYY-MM-DD HH:mm:ss"
+              value-format="x"
           />
         </el-form-item>
         <el-form-item prop="password" label="评审时间">
@@ -314,8 +318,8 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               type="datetime"
               placeholder="Select date and time"
               style="width: 310px"
-              format="YYYY-MM-DD hh:mm:ss"
-              value-format="YYYY-MM-DD hh:mm:ss"
+              format="YYYY-MM-DD HH:mm:ss"
+              value-format="x"
           />
         </el-form-item>
         <el-form-item prop="name" label="结束时间">
@@ -324,8 +328,8 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               type="datetime"
               placeholder="Select date and time"
               style="width: 310px"
-              format="YYYY-MM-DD hh:mm:ss"
-              value-format="YYYY-MM-DD hh:mm:ss"
+              format="YYYY-MM-DD HH:mm:ss"
+              value-format="x"
           />
         </el-form-item>
       </el-form>
