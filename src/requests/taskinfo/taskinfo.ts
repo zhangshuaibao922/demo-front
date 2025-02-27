@@ -1,5 +1,6 @@
 import service from "@/requests/service.ts";
 import type {condtion} from "./type.ts";
+import type {CreateOrUpdateTableRequestData} from "@/requests/task/type.ts";
 /** 查 */
 export function getTableDataApi(taskId:string) {
     return service({
@@ -36,5 +37,20 @@ export function addCondtion(data:condtion[],taskId:string){
         url:'/condtion/saveBatch/'+taskId,
         method:'post',
         data
+    })
+}
+
+/** 改 */
+export function updateTableDataApi(data: CreateOrUpdateTableRequestData) {
+    return service({
+        url: "/task/update",
+        method: "post",
+        data
+    })
+}
+export function countUsers(){
+    return service({
+        url:'/user/count',
+        method:'get'
     })
 }

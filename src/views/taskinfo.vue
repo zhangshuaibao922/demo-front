@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref, watch} from "vue";
-import {CirclePlus, Delete, RefreshRight} from "@element-plus/icons-vue";
+import {CirclePlus, Delete, DArrowLeft,RefreshRight} from "@element-plus/icons-vue";
 import type {condtion, resource, resourceDto} from "@/requests/taskinfo/type.ts";
-import {add, addCondtion, deleteTableDataApi, getCondtionApi, getTableDataApi} from "@/requests/taskinfo/taskinfo.ts";
+import {
+  add,
+  addCondtion, countUsers,
+  deleteTableDataApi,
+  getCondtionApi,
+  getTableDataApi,
+  updateTableDataApi
+} from "@/requests/taskinfo/taskinfo.ts";
 import { taskInfoStore } from '@/stores/taskInfoStore.ts';
 import {useInfoStore} from "@/stores/userStore.ts"
 import { useRouter } from 'vue-router';
@@ -19,7 +26,8 @@ const fileInput = ref<HTMLInputElement | null>(null); // 原为 ref(null)
 const resourceData= ref<resourceDto[]>([])
 const fileName=ref('')
 const dialogVisible=ref(false)
-const bool=ref('false')
+const bool=ref(false)
+const userNumber=ref(2);
 
 // 修改后的处理函数
 const handleFileChange = () => {
@@ -68,6 +76,9 @@ const reFlash=async ()=>{
   resourceData.value=response.data.data;
   loading.value = false;
 }
+const toTask=async ()=>{
+  router.push("/task")
+}
 function resetForm(){
   dialogVisible.value=false;
   fileName.value='';
@@ -86,7 +97,7 @@ const deleteResource = (data:resourceDto) => {
 }
 
 //condition
-export type ConditionType = 'old' | 'score' | 'fieldName' | 'classmate' | 'colleague'
+export type ConditionType = 'old' | 'score' | 'fieldName' | 'classmate' | 'colleague' |'person'
 
 
 const condtionformData = reactive({
@@ -99,7 +110,8 @@ const conditionOptions = [
   { label: '项目得分', value: 'score' },
   { label: '专业领域', value: 'fieldName' },
   { label: '同学关系', value: 'classmate' },
-  { label: '同事关系', value: 'colleague' }
+  { label: '同事关系', value: 'colleague' },
+  { label: '抽取人数', value: 'person' }
 ]
 
 // 运算符配置
@@ -121,6 +133,9 @@ const operatorsMap: Record<ConditionType, Array<{label: string, value: string}>>
     { label: '等于', value: '=' }
   ],
   colleague: [
+    { label: '等于', value: '=' }
+  ],
+  person:[
     { label: '等于', value: '=' }
   ]
 }
@@ -176,16 +191,35 @@ const saveCondition=async ()=>{
   const res=await addCondtion(condtionformData.conditions,taskInfo.taskInfo.conditionId);
 }
 
+const  handleCardClickOne=async () =>{
+  const res=await updateTableDataApi(taskInfo.taskInfo);
+  if(res.data.code==200){
+    ElMessage.success("保存成功");
+    router.push('/task');
+  }else {
+    ElMessage.error("已经开始抽取评审,无法更改相关条件");
+  }
+}
+
 // condition
 onMounted(async ()=>{
   const response=await getTableDataApi(taskInfo.taskInfo.id);
   resourceData.value=response.data.data;
   await fetchFieldOptions()
   const res=await getCondtionApi(taskInfo.taskInfo.conditionId);
-  condtionformData.conditions=res.data.data;
-  if(taskInfo.taskInfo.status<=1){
-    bool.value="true";
+  if(taskInfo.taskInfo.status>=2){
+    condtionformData.conditions=res.data.data;
+    bool.value=true;
+  }else {
+    condtionformData.conditions.push({
+      conditionId: taskInfo.taskInfo.conditionId,
+      conditionName: "person",
+      conditionIf: "=",
+      conditionValue: "1"
+    });
   }
+  const response1=await countUsers()
+  userNumber.value=response1.data.data;
 })
 </script>
 
@@ -200,17 +234,19 @@ onMounted(async ()=>{
       >
       <button @click="uploadFile">上传文件</button>
     </div>
-
     <el-card v-loading="loading" shadow="never" class="search-wrapper">
-      <div class="toolbar-wrapper" v-if="taskInfo.taskInfo.status<=1">
+      <div class="toolbar-wrapper">
         <div>
-          <el-button type="primary" :icon="CirclePlus" @click="select">
+          <el-tooltip content="返回">
+            <el-button type="primary" :icon="DArrowLeft" circle @click="toTask"/>
+          </el-tooltip>
+          <el-button  v-if="taskInfo.taskInfo.status<=1" type="primary" :icon="CirclePlus" @click="select">
             新增资源
           </el-button>
         </div>
         <div>
           <el-text class="mx-1" size="large"></el-text>
-          <el-tooltip content="刷新资源">
+          <el-tooltip  v-if="taskInfo.taskInfo.status<=1" content="刷新资源">
             <el-button type="primary" :icon="RefreshRight" circle @click="reFlash"/>
           </el-tooltip>
         </div>
@@ -329,10 +365,33 @@ onMounted(async ()=>{
                 <!-- 数值输入（old/score） -->
                 <el-input-number
                     :disabled="bool"
-                    v-else-if="['old', 'score'].includes(item.conditionName)"
+                    v-else-if="['score'].includes(item.conditionName)"
                     v-model="item.conditionValue"
                     :precision="0"
                     :min="0"
+                    :max="100"
+                    controls-position="right"
+                    style="width: 200px"
+                />
+                <!-- 数值输入（old/score） -->
+                <el-input-number
+                    :disabled="bool"
+                    v-else-if="['old'].includes(item.conditionName)"
+                    v-model="item.conditionValue"
+                    :precision="0"
+                    :min="1"
+                    :max="10"
+                    controls-position="right"
+                    style="width: 200px"
+                />
+                <!-- 数值输入（old/score） -->
+                <el-input-number
+                    :disabled="bool"
+                    v-else-if="['person'].includes(item.conditionName)"
+                    v-model="item.conditionValue"
+                    :precision="0"
+                    :min="1"
+                    :max="userNumber"
                     controls-position="right"
                     style="width: 200px"
                 />
@@ -364,73 +423,71 @@ onMounted(async ()=>{
         </div>
       </div>
     </el-card>
-<!--    <el-card v-loading="loading" shadow="never" class="search-wrapper" v-if="taskInfo.taskInfo.status>=2">-->
-<!--      <div style="display: flex; gap: 20px; padding: 10px;">-->
-<!--        &lt;!&ndash; 绿色卡片 &ndash;&gt;-->
-<!--        <div-->
-<!--            style="-->
-<!--        flex: 1;-->
-<!--        min-width: 120px;-->
-<!--        height: 100px;-->
-<!--        background: #67C23A;-->
-<!--        border-radius: 8px;-->
-<!--        cursor: pointer;-->
-<!--        display: flex;-->
-<!--        align-items: center;-->
-<!--        justify-content: center;-->
-<!--        transition: transform 0.2s;-->
-<!--      "-->
-<!--            @click="handleCardClick(1)"-->
-<!--        >-->
-<!--      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">-->
-<!--        提前评审-->
-<!--      </span>-->
-<!--        </div>-->
+    <el-card v-loading="loading" shadow="never" class="search-wrapper">
+      <div style="display: flex; gap: 20px; padding: 10px;">
+        <!-- 绿色卡片 -->
+        <div
+            style="
+        flex: 1;
+        min-width: 120px;
+        height: 100px;
+        background: #67C23A;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+      "
+            @click="handleCardClickOne()"
+        >
+      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+        结束上传资源
+      </span>
+        </div>
 
-<!--        &lt;!&ndash; 橙色卡片 &ndash;&gt;-->
-<!--        <div-->
-<!--            style="-->
-<!--        flex: 1;-->
-<!--        min-width: 120px;-->
-<!--        height: 100px;-->
-<!--        background: #E6A23C;-->
-<!--        border-radius: 8px;-->
-<!--        cursor: pointer;-->
-<!--        display: flex;-->
-<!--        align-items: center;-->
-<!--        justify-content: center;-->
-<!--        margin: 0 10px;-->
-<!--        transition: transform 0.2s;-->
-<!--      "-->
-<!--            @click="handleCardClick(2)"-->
-<!--        >-->
-<!--      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">-->
-<!--        评审名单-->
-<!--      </span>-->
-<!--        </div>-->
+        <!-- 橙色卡片 -->
+        <div
+            style="
+        flex: 1;
+        min-width: 120px;
+        height: 100px;
+        background: #E6A23C;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+        transition: transform 0.2s;
+      "
+        >
+      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+        评审名单
+      </span>
+        </div>
 
-<!--        &lt;!&ndash; 红色卡片 &ndash;&gt;-->
-<!--        <div-->
-<!--            style="-->
-<!--        flex: 1;-->
-<!--        min-width: 120px;-->
-<!--        height: 100px;-->
-<!--        background: #F56C6C;-->
-<!--        border-radius: 8px;-->
-<!--        cursor: pointer;-->
-<!--        display: flex;-->
-<!--        align-items: center;-->
-<!--        justify-content: center;-->
-<!--        transition: transform 0.2s;-->
-<!--      "-->
-<!--            @click="handleCardClick(3)"-->
-<!--        >-->
-<!--      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">-->
-<!--        评审结果-->
-<!--      </span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </el-card>-->
+        <!-- 红色卡片 -->
+        <div
+            style="
+        flex: 1;
+        min-width: 120px;
+        height: 100px;
+        background: #F56C6C;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+      "
+        >
+      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+        评审结果
+      </span>
+        </div>
+      </div>
+    </el-card>
 
   </div>
 </template>

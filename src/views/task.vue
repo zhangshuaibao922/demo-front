@@ -23,20 +23,24 @@ const statusList = [
     value: 1,
     label: '创建',
   },
-  {
+    {
     value: 2,
-    label: '抽取',
+    label: '资源',
   },
   {
     value: 3,
-    label: '评审',
+    label: '抽取',
   },
   {
     value: 4,
-    label: '完成',
+    label: '评审',
   },
   {
     value: 5,
+    label: '完成',
+  },
+  {
+    value: 6,
     label: '全部',
   },
 ]
@@ -117,7 +121,7 @@ const tableData = ref<TableData[]>([])
 const searchFormRef = ref<FormInstance | null>(null)
 const searchData = reactive({
   taskName: "",
-  status: 5,
+  status: 6,
 })
 
 function getTableData() {
@@ -243,19 +247,19 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-table-column prop="taskName"  label="任务名称" align="center"/>
           <el-table-column prop="siphonTime" label="抽取时间" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=1" tag="b"  >{{ formatDate(scope.row.siphonTime) }}</el-text>
+              <el-text v-if="scope.row.status<=2" tag="b"  >{{ formatDate(scope.row.siphonTime) }}</el-text>
               <el-text v-else tag="del">{{ formatDate(scope.row.siphonTime) }}</el-text>
             </template>
           </el-table-column>
           <el-table-column prop="startTime" label="评审时间" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=2" tag="b">{{ formatDate(scope.row.startTime) }}</el-text>
+              <el-text v-if="scope.row.status<=3" tag="b">{{ formatDate(scope.row.startTime) }}</el-text>
               <el-text v-else tag="del">{{ formatDate(scope.row.startTime) }}</el-text>
             </template>
           </el-table-column>
           <el-table-column prop="endTime" label="结束时间" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=3">{{ formatDate(scope.row.endTime) }}</el-text>
+              <el-text v-if="scope.row.status<=4">{{ formatDate(scope.row.endTime) }}</el-text>
               <el-text v-else  tag="del">{{ formatDate(scope.row.endTime) }}</el-text>
             </template>
           </el-table-column>
