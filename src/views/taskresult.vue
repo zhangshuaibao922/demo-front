@@ -23,7 +23,7 @@ const searchFormRef = ref<FormInstance | null>(null)
 const searchData = reactive({
   taskId: taskInfo.taskInfo.id,
   name: "",
-  fieldName:"",
+  fieldId: null,
 })
 function getTableData() {
   loading.value = true
@@ -32,7 +32,7 @@ function getTableData() {
     size: paginationData.pageSize,
     taskId: searchData.taskId,
     name: searchData.name || undefined,
-    fieldName: searchData.fieldName || undefined,
+    fieldId: searchData.fieldId || undefined,
   }).then((res) => {
     paginationData.total = res.data.data.total
     tableData.value = res.data.data.records

@@ -16,7 +16,7 @@ export interface TableRequestData {
     /** 查询参数：用户名 */
     taskId: string
     name?: string
-    fieldName?: string
+    fieldId?: number
 }
 
 export interface TableData {
