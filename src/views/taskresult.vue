@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 
 import { CirclePlus, Delete, Download, Refresh, RefreshRight, Search } from "@element-plus/icons-vue"
-import { cloneDeep } from "lodash-es"
 import {onMounted, reactive, ref, watch} from "vue";
 import {usePagination} from "@/requests/user/usePagination.ts";
-import type {CreateOrUpdateTableRequestData, TableData} from "@/requests/taskresult/type.ts";
+import type {TableData} from "@/requests/taskresult/type.ts";
 import type {FormInstance} from "element-plus";
 import {getTableDataApi} from "@/requests/taskresult/taskresult.ts";
 import {taskInfoStore} from "@/stores/taskInfoStore.ts";
