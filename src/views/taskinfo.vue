@@ -200,6 +200,13 @@ const  handleCardClickOne=async () =>{
     ElMessage.error("已经开始抽取评审,无法更改相关条件");
   }
 }
+const handleCardClickTwo = async () => {
+  if(taskInfo.taskInfo.status==3){
+    router.push('/taskresult');
+  }else {
+    ElMessage.warning("暂无抽取名单，请到规定时间查看");
+  }
+}
 
 // condition
 onMounted(async ()=>{
@@ -461,6 +468,7 @@ onMounted(async ()=>{
         margin: 0 10px;
         transition: transform 0.2s;
       "
+            @click="handleCardClickTwo()"
         >
       <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
         评审名单

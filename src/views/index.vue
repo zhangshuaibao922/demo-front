@@ -22,7 +22,7 @@
             text-color="#cfd3dc"
             active-text-color="#ffffff"
             :collapse-transition="false"
-            :default-openeds="['1']"
+            :default-openeds="['1', '2', '3']"
             border="false"
         >
           <el-sub-menu index="1">
@@ -39,6 +39,13 @@
               <span>任务管理</span>
             </template>
             <el-menu-item  @click="addTab(Tabs[2])">{{Tabs[2].title}}</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title>
+              <el-icon> <Notification/></el-icon>
+              <span>评审管理</span>
+            </template>
+            <el-menu-item  @click="addTab(Tabs[3])">{{Tabs[3].title}}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
@@ -100,7 +107,6 @@
           >
           </el-tab-pane>
         </el-tabs>
-<!--        todo 修改成用户名字-->
         <el-watermark :font="font" :content="[userInfo.user.name]">
           <!--        <el-divider style="margin: 1px" />-->
           <router-view style="width: 100%;height: 100%;"/>
@@ -158,6 +164,11 @@ const Tabs = reactive<Tab[]>([
     name: 'task',
     path:'/task'
   },
+    {
+      title: '评审信息',
+      name: 'taskresult',
+      path:'/taskresult'
+    },
 ])
 const editableTabs=ref<Tab[]>([
   {
