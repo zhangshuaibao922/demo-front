@@ -99,7 +99,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-table-column prop="email" label="邮箱" align="center" width="200" />
           <el-table-column  label="评分" align="center">
             <template #default="scope">
-              <el-text v-if="scope.row.score===-1" tag="b"  type="warning">暂无评分</el-text>
+              <el-text v-if="scope.row.score===-1" tag="b"  type="danger">暂无评分</el-text>
               <el-text v-else tag="b">{{ scope.row.score }}</el-text>
             </template>
           </el-table-column>
@@ -107,7 +107,12 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-table-column prop="description" label="评语" align="center" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="150" align="center">
             <template #default="scope">
-
+              <el-button type="primary" text bg size="small">
+                修改
+              </el-button>
+              <el-button type="danger" text bg size="small">
+                作废
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
