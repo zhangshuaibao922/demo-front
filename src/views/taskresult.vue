@@ -82,6 +82,12 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
     <el-card v-loading="loading" shadow="never">
       <div class="toolbar-wrapper">
         <div>
+          <el-button type="primary" :icon="CirclePlus" @click="dialogVisible = true">
+            新增用户
+          </el-button>
+          <el-button type="danger" :icon="Delete" @click="deleteAll">
+            批量删除
+          </el-button>
         </div>
         <div>
           <el-tooltip content="下载">
@@ -93,7 +99,8 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         </div>
       </div>
       <div class="table-wrapper">
-        <el-table :data="tableData">
+        <el-table :data="tableData" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="50" align="center" />
           <el-table-column prop="userName" label="姓名" align="center" />
           <el-table-column prop="fieldName" label="账号" align="center" />
           <el-table-column prop="email" label="邮箱" align="center" width="200" />
