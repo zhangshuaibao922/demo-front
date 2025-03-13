@@ -22,6 +22,7 @@ export interface TableRequestData {
 export interface TableData {
     id: string;          // 主键，使用可选字段
     taskId: string;     // 任务名称
+    taskName: string;
     userId: string; // 条件id
     userName: string;  // 抽取时间，使用 ISO 格式的字符串
     email: string;  // 抽取时间，使用 ISO 格式的字符串
