@@ -3,7 +3,7 @@ import type {CreateOrUpdateTableRequestData, TableData} from "@/requests/task/ty
 import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from "element-plus"
 import {createTableDataApi, deleteAllTableDataApi, deleteTableDataApi, getTableDataApi} from "@/requests/task/task.ts"
 import {usePagination} from "@/requests/user/usePagination.ts"
-import {CirclePlus, Delete, Download, Refresh, RefreshRight, Search} from "@element-plus/icons-vue"
+import {CirclePlus, Delete, Download, Refresh, RefreshRight, Search, DArrowLeft} from "@element-plus/icons-vue"
 import {cloneDeep} from "lodash-es"
 import {onMounted, reactive, ref, watch} from "vue";
 import { useRouter } from 'vue-router';
@@ -166,6 +166,14 @@ function pushTaskInfo(row: TableData){
   router.push('/taskinfo')
 }
 
+function routerTaskResult(row: TableData){
+  if(row.status>=3){
+    taskInfo.setTaskInfo(row)
+    router.push('/taskresult')
+  }else{
+    ElMessage.error("暂未抽取评审人员")
+  }
+}
 
 
 const selectionTable = ref<TableData[]>([])
@@ -245,25 +253,25 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         <el-table :data="tableData" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column prop="taskName"  label="任务名称" align="center"/>
-          <el-table-column prop="siphonTime" label="抽取时间" align="center" >
+          <el-table-column prop="siphonTime" label="抽取时间" width="150" align="center" >
             <template #default="scope">
               <el-text v-if="scope.row.status<=2" tag="b"  >{{ formatDate(scope.row.siphonTime) }}</el-text>
               <el-text v-else tag="del">{{ formatDate(scope.row.siphonTime) }}</el-text>
             </template>
           </el-table-column>
-          <el-table-column prop="startTime" label="评审时间" align="center" >
+          <el-table-column prop="startTime" label="评审时间" width="150" align="center" >
             <template #default="scope">
               <el-text v-if="scope.row.status<=3" tag="b">{{ formatDate(scope.row.startTime) }}</el-text>
               <el-text v-else tag="del">{{ formatDate(scope.row.startTime) }}</el-text>
             </template>
           </el-table-column>
-          <el-table-column prop="endTime" label="结束时间" align="center" >
+          <el-table-column prop="endTime" label="结束时间" width="150" align="center" >
             <template #default="scope">
               <el-text v-if="scope.row.status<=4">{{ formatDate(scope.row.endTime) }}</el-text>
               <el-text v-else  tag="del">{{ formatDate(scope.row.endTime) }}</el-text>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" align="center" >
+          <el-table-column prop="status" label="状态" width="100" align="center" >
             <template #default="scope">
               <el-tag :type="'success'" effect="light" disable-transitions>
                 {{ getStatusLabel(scope.row.status) }}
@@ -273,7 +281,10 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-table-column fixed="right" label="操作" align="center">
             <template #default="scope">
               <el-button type="primary" text bg size="small" @click="pushTaskInfo(scope.row)">
-                详情
+                资源详情
+              </el-button>
+              <el-button type="primary" text bg size="small" @click="routerTaskResult(scope.row)">
+                评审结果
               </el-button>
               <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)">
                 删除

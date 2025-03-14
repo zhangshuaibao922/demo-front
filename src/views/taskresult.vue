@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 
-import { CirclePlus, Delete, Download, Refresh, RefreshRight, Search } from "@element-plus/icons-vue"
+import {CirclePlus, DArrowLeft, Delete, Download, Refresh, RefreshRight, Search} from "@element-plus/icons-vue"
 import {onMounted, reactive, ref, watch} from "vue";
 import {usePagination} from "@/requests/user/usePagination.ts";
 import type {TableData} from "@/requests/taskresult/type.ts";
 import {ElMessage, ElMessageBox, type FormInstance} from "element-plus";
 import {getTableDataApi,deleteAllTableDataApi,queryByName,addTableDataApi,deleteById} from "@/requests/taskresult/taskresult.ts";
 import {taskInfoStore} from "@/stores/taskInfoStore.ts";
-import axios from "axios";
+import { useRouter } from 'vue-router';
 const taskInfo=taskInfoStore();
+const router=useRouter();
 defineOptions({
   // 命名当前组件
   name: "Table",
@@ -149,6 +150,9 @@ function handleDelete(id: string) {
     })
   })
 }
+const toTask=async ()=>{
+  router.push("/task")
+}
 onMounted(async () => {
 
 });
@@ -160,6 +164,11 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
   <div class="app-container" style="  padding: 20px;background-color: #F5F5F5">
     <el-card v-loading="loading" shadow="never" class="search-wrapper">
       <el-form ref="searchFormRef" :inline="true" :model="searchData">
+        <el-form-item>
+          <el-tooltip content="返回">
+            <el-button type="primary" :icon="DArrowLeft" circle @click="toTask"/>
+          </el-tooltip>
+        </el-form-item>
         <el-form-item prop="name" label="姓名">
           <el-input v-model="searchData.name" placeholder="请输入" />
         </el-form-item>

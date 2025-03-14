@@ -247,6 +247,9 @@ onMounted(async ()=>{
           <el-tooltip content="返回">
             <el-button type="primary" :icon="DArrowLeft" circle @click="toTask"/>
           </el-tooltip>
+          <el-button @click="handleCardClickOne()" type="danger" >
+            结束上传资源
+          </el-button>
           <el-button  v-if="taskInfo.taskInfo.status<=1" type="primary" :icon="CirclePlus" @click="select">
             新增资源
           </el-button>
@@ -427,72 +430,6 @@ onMounted(async ()=>{
               </el-button>
             </div>
           </el-form>
-        </div>
-      </div>
-    </el-card>
-    <el-card v-loading="loading" shadow="never" class="search-wrapper">
-      <div style="display: flex; gap: 20px; padding: 10px;">
-        <!-- 绿色卡片 -->
-        <div
-            style="
-        flex: 1;
-        min-width: 120px;
-        height: 100px;
-        background: #67C23A;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s;
-      "
-            @click="handleCardClickOne()"
-        >
-      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
-        结束上传资源
-      </span>
-        </div>
-
-        <!-- 橙色卡片 -->
-        <div
-            style="
-        flex: 1;
-        min-width: 120px;
-        height: 100px;
-        background: #E6A23C;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 10px;
-        transition: transform 0.2s;
-      "
-            @click="handleCardClickTwo()"
-        >
-      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
-        评审名单
-      </span>
-        </div>
-
-        <!-- 红色卡片 -->
-        <div
-            style="
-        flex: 1;
-        min-width: 120px;
-        height: 100px;
-        background: #F56C6C;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s;
-      "
-        >
-      <span style="color: white; font-size: 30px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
-        评审结果
-      </span>
         </div>
       </div>
     </el-card>
