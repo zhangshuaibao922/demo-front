@@ -16,6 +16,7 @@ export interface TableRequestData {
     /** 查询参数：用户名 */
     taskName?: string
     status?: number
+    id?:string
 }
 
 export interface TableData {

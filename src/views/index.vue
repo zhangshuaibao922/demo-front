@@ -45,7 +45,8 @@
               <el-icon> <Notification/></el-icon>
               <span>评审管理</span>
             </template>
-<!--            <el-menu-item  @click="addTab(Tabs[3])">{{Tabs[3].title}}</el-menu-item>-->
+           <el-menu-item  @click="addTab(Tabs[3])">{{Tabs[3].title}}</el-menu-item>
+           <el-menu-item  @click="addTab(Tabs[4])">{{Tabs[4].title}}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
@@ -163,6 +164,16 @@ const Tabs = reactive<Tab[]>([
     title: '任务信息',
     name: 'task',
     path:'/task'
+  },
+  {
+    title: '评审任务',
+    name: 'taskOne',
+    path:'/taskone'
+  },
+  {
+    title: '评审结果',
+    name: 'taskResult',
+    path:'/taskresult'
   },
     // {
     //   title: '评审信息',

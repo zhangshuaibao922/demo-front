@@ -44,6 +44,16 @@ const router = createRouter({
           name: 'taskresult',
           component: () => import('../views/taskresult.vue'),
         },
+        {
+          path: '/taskone',
+          name: 'taskone',
+          component: () => import('../views/taskOne.vue'),
+        },
+        {
+          path: '/score',
+          name: 'score',
+          component: () => import('../views/score.vue'),
+        },
       ]
     },
 

@@ -210,6 +210,8 @@ const handleCardClickTwo = async () => {
 
 // condition
 onMounted(async ()=>{
+  const response1=await countUsers()
+  userNumber.value=response1.data.data;
   const response=await getTableDataApi(taskInfo.taskInfo.id);
   resourceData.value=response.data.data;
   await fetchFieldOptions()
@@ -225,8 +227,6 @@ onMounted(async ()=>{
       conditionValue: "1"
     });
   }
-  const response1=await countUsers()
-  userNumber.value=response1.data.data;
 })
 </script>
 
