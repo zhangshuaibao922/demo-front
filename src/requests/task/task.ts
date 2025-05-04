@@ -8,6 +8,13 @@ export function getTableDataApi(params: Table.TableRequestData) {
         params
     })
 }
+export function getTableDataApiTeacher(params: Table.TableRequestData) {
+    return service({
+        url: "/task/page/teacher",
+        method: "get",
+        params
+    })
+}
 export function getTableDataApiResult(params: Table.TableRequestData) {
     return service({
         url: "/task/page/result",

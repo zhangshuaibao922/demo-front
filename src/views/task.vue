@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type {CreateOrUpdateTableRequestData, TableData} from "@/requests/task/type.ts"
 import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from "element-plus"
-import {createTableDataApi, deleteAllTableDataApi, deleteTableDataApi, getTableDataApi} from "@/requests/task/task.ts"
+import {createTableDataApi, deleteAllTableDataApi, deleteTableDataApi, getTableDataApi,getTableDataApiTeacher} from "@/requests/task/task.ts"
 import {usePagination} from "@/requests/user/usePagination.ts"
 import {CirclePlus, Delete, Download, Refresh, RefreshRight, Search, DArrowLeft} from "@element-plus/icons-vue"
 import {cloneDeep} from "lodash-es"
@@ -128,11 +128,12 @@ const searchData = reactive({
 
 function getTableData() {
   loading.value = true
-  getTableDataApi({
+  getTableDataApiTeacher({
     page: paginationData.currentPage,
     size: paginationData.pageSize,
     taskName: searchData.taskName || undefined,
     status: searchData.status || undefined,
+    id:userInfo.user.roleId==1?undefined:userInfo.user.id
   }).then((res) => {
     paginationData.total = res.data.data.total
     tableData.value = res.data.data.records
