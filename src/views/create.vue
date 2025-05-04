@@ -11,7 +11,6 @@
           ref="ruleFormRef"
           :model="ruleForm"
           status-icon
-          :rules="rules"
           label-width="80px"
           class="demo-ruleForm"
       >
@@ -32,6 +31,44 @@
               placeholder="请输入密码"
           />
         </el-form-item>
+        <el-form-item label="姓名" prop="name">
+          <el-input
+              v-model="ruleForm.name"
+              autocomplete="off"
+              style="width: 220px"
+              placeholder="请输入姓名"
+          />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input
+              v-model="ruleForm.email"
+              autocomplete="off"
+              style="width: 130px"
+              placeholder="请输入邮箱"
+          />
+          <el-button type="primary" style="margin-left: 10px" @click="sendCode">验证码</el-button>
+        </el-form-item>
+        <el-form-item label="验证码" prop="code">
+          <el-input
+              v-model="code"
+              autocomplete="off"
+              style="width: 220px"
+              placeholder="请输入验证码"
+          />
+        </el-form-item>
+        <el-form-item  prop="fieldId" label="领域">
+          <el-select
+              v-model="ruleForm.fieldId"
+              placeholder="Select"
+          >
+            <el-option
+                v-for="item in FieldList"
+                :key="item.fieldName"
+                :label="item.fieldName"
+                :value="item.fieldId"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-row :gutter="20" justify="space-between" style="width: 210px">
             <el-col :span="6"> <el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)">
@@ -39,7 +76,7 @@
             </el-button></el-col>
             <el-col :span="6"></el-col>
             <el-col :span="6"></el-col>
-            <el-col :span="6"><el-button type="primary" class="login-btn" @click="create()">
+            <el-col :span="6"><el-button type="primary" class="login-btn">
               注册
             </el-button></el-col>
           </el-row>
@@ -50,34 +87,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import {onMounted, reactive, ref, watch} from "vue";
 import type { FormInstance } from 'element-plus';
 import { useInfoStore } from '@/stores/userStore.ts';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import {type Login, login_API} from "@/requests/login/login.ts"
-
+import {type Login,type Create, create_API, sendCode_API} from "@/requests/login/login.ts"
+import {
+  createTableDataApi, deleteAllTableDataApi,
+  deleteTableDataApi, getExcelApi,
+  getFieldDataApi,
+  getRoleDataApi,
+  getTableDataApi,
+  updateTableDataApi
+} from "@/requests/user"
 const user = useInfoStore();
 const router = useRouter();
 const ruleFormRef = ref<FormInstance>()
 
 // 表单模型
-const ruleForm = reactive<Login>({
+const ruleForm = reactive<Create>({
+  id:undefined,
   account: '',
   password: '',
+  name: '',
+  email: '',
+  fieldId: 0,
+  relationship: '',
+  roleId: 2,
+  old: 0,
+  score: 0,
 });
+const code=ref<string>("");
 
-// 表单验证规则
-const rules = {
-  account: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
-    { min: 3, max: 11, message: '账号的长度在3-11位之间', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 3, max: 10, message: '密码的长度在3-10位之间', trigger: 'blur' },
-  ],
-};
+const sendCode=()=>{
+  if(ruleForm.email===""){
+    ElMessage.error("请输入邮箱")
+    return
+  }
+  sendCode_API(ruleForm.email).then((res)=>{
+    ElMessage.success("验证码发送成功")
+  })
+}
 
 // 提交表单的方法
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -85,28 +136,42 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid) => {
     // 处理登录成功的情况
     if (valid) {
-      login_API(ruleForm).then((res) => {
-        if(res.data.code===200){
-          user.setUserInfo(res.data.data);
-          console.log(user);
-          ElMessage.success("登录成功")
-          router.push('/home');
-        }else{
-          ElMessage.error("登录失败，请检查账号密码")
-          console.error("登录失败："+res.data.message);
-        }
+      create_API(ruleForm,code.value).then((res) => {
+          // user.setUserInfo(res.data.data);
+          // console.log(user);
+          ElMessage.success("注册成功，跳转登录")
+          router.push('/login');
       }).catch((error: any) => {
-        ElMessage.error("登陆失败，请检查账号密码")
-        console.error("登录失败：", error);
+        ElMessage.error("注册失败，请检查账号密码")
+        console.error("注册失败：", error);
       });
     } else {
-      ElMessage.error("登陆失败，请检查账号密码")
+      ElMessage.error("注册失败，请检查账号密码")
       console.log('error submit!')
     }
   })
 }
-const create = () => {
-  router.push('/create');
+export interface Field{
+  fieldId: number
+  fieldName:string
+}
+const FieldList=ref<Field[]>([{
+  fieldId: 0,
+  fieldName:"未选择"
+}])
+const findFieldName = (fieldId:number) => {
+  const field = FieldList.value.find(r => r.fieldId === fieldId);
+  return field ? field.fieldName : '未知领域';
+};
+const getField=async ()=>{
+  await getFieldDataApi().then((res) => {
+    for (const data of res.data.data) {
+      FieldList.value.push({
+        fieldId: data.fieldId,
+        fieldName: data.fieldName,
+      })
+    }
+  })
 }
 
 // 跳转到注册页面的方法
@@ -114,6 +179,10 @@ const toCreate = () => {
   // 实现跳转逻辑，例如使用 Vue Router
   router.push('/register'); // 确保有对应的路由
 };
+// #endregion
+onMounted(async () => {
+  await getField()
+});
 </script>
 
 <style lang="scss" scoped>

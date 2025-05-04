@@ -65,7 +65,7 @@
             </el-icon>
             <div class="spacer" style="flex-grow: 1"></div>
             <Screenfull style="margin-left: 10px;height: 20px;width: 20px"/>
-            <Notify style="margin-left: 10px;height: 20px;width: 20px"/>
+            <!-- <Notify style="margin-left: 10px;height: 20px;width: 20px"/> -->
             <el-dropdown style="margin-left: 20px">
               <div>
                 <el-avatar :icon="UserFilled" :size="30" />
@@ -76,9 +76,9 @@
                   <a target="_blank" href="https://github.com/un-pany/v3-admin-vite">
                     <el-dropdown-item>GitHub</el-dropdown-item>
                   </a>
-                  <a target="_blank" href="https://gitee.com/un-pany/v3-admin-vite">
+                  <!-- <a target="_blank" href="https://gitee.com/un-pany/v3-admin-vite">
                     <el-dropdown-item>Gitee</el-dropdown-item>
-                  </a>
+                  </a> -->
                   <el-dropdown-item divided @click="">
                     退出登录
                   </el-dropdown-item>
@@ -172,8 +172,8 @@ const Tabs = reactive<Tab[]>([
   },
   {
     title: '评审结果',
-    name: 'taskResult',
-    path:'/taskresult'
+    name: 'taskOneResult',
+    path:'/taskoneresult'
   },
     // {
     //   title: '评审信息',

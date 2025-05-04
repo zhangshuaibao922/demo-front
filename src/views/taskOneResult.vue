@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type {CreateOrUpdateTableRequestData, TableData} from "@/requests/task/type.ts"
 import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from "element-plus"
-import {createTableDataApi, deleteAllTableDataApi, deleteTableDataApi, getTableDataApi} from "@/requests/task/task.ts"
+import {createTableDataApi, deleteAllTableDataApi, deleteTableDataApi, getTableDataApi,getTableDataApiResult} from "@/requests/task/task.ts"
 import {usePagination} from "@/requests/user/usePagination.ts"
 import {CirclePlus, Delete, Download, Refresh, RefreshRight, Search, DArrowLeft} from "@element-plus/icons-vue"
 import {cloneDeep} from "lodash-es"
@@ -44,7 +44,7 @@ function handleCreateOrUpdate() {
     }
     loading.value = true
     const api =createTableDataApi ;
-    api(formData.value).then(() => {
+    api(formData.value,userInfo.user.id).then(() => {
       ElMessage.success("操作成功")
       dialogVisible.value = false
       getTableData()
@@ -62,9 +62,20 @@ function resetForm() {
 
 
 // #endregion
+export interface TableDataResult {
+    id: string;          // 主键，使用可选字段
+    taskName: string;     // 任务名称
+    conditionId: string; // 条件id
+    number:string;
+    siphonTime: string;  // 抽取时间，使用 ISO 格式的字符串
+    startTime: string;   // 开始评审时间，使用 ISO 格式的字符串
+    endTime: string;     // 结束时间，使用 ISO 格式的字符串
+    resultScore: number; // 得分
+    status: number;      // 状态
+}
 
 // #region 查
-const tableData = ref<TableData[]>([])
+const tableData = ref<TableDataResult[]>([])
 const searchFormRef = ref<FormInstance | null>(null)
 const searchData = reactive({
   taskName: "",
@@ -73,7 +84,7 @@ const searchData = reactive({
 
 function getTableData() {
   loading.value = true
-  getTableDataApi({
+  getTableDataApiResult({
     page: paginationData.currentPage,
     size: paginationData.pageSize,
     taskName: searchData.taskName || undefined,
@@ -103,7 +114,7 @@ function resetSearch() {
   handleSearch()
 }
 
-function pushTaskInfo(row: TableData){
+function pushTaskInfo(row: TableDataResult){
   // 检查当前时间是否在评审时间范围内
   const currentTime = Date.now();
   const startTimeMs = Number(row.startTime);
@@ -118,16 +129,15 @@ function pushTaskInfo(row: TableData){
     ElMessage.warning("评审已结束");
     return;
   }
-  
   console.log("当前时间在评审范围内，允许跳转");
   taskInfo.setTaskInfo(row)
   router.push('/score')
 }
 
-function routerTaskResult(row: TableData){
+function routerTaskResult(row: TableDataResult){
   if(row.status>=3){
     taskInfo.setTaskInfo(row)
-    router.push('/taskresult')
+    router.push('/taskresultone')
   }else{
     ElMessage.error("暂未抽取评审人员")
   }
@@ -173,25 +183,22 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
       <div class="table-wrapper">
         <el-table :data="tableData">
           <el-table-column prop="taskName"  label="任务名称" align="center"/>
-          <el-table-column prop="startTime" label="评审时间"  align="center" >
+          <el-table-column prop="number" label="人数"  align="center" />
+          <el-table-column prop="resultScore" label="得分"  align="center" />
+          <el-table-column prop="startTime" label="结果" width="150" align="center" >
             <template #default="scope">
-              <el-text v-if="scope.row.status<=3" tag="b">{{ formatDate(scope.row.startTime) }}</el-text>
-              <el-text v-else tag="del">{{ formatDate(scope.row.startTime) }}</el-text>
-            </template>
-          </el-table-column>
-          <el-table-column prop="endTime" label="结束时间" align="center" >
-            <template #default="scope">
-              <el-text v-if="scope.row.status<=4">{{ formatDate(scope.row.endTime) }}</el-text>
-              <el-text v-else  tag="del">{{ formatDate(scope.row.endTime) }}</el-text>
+              <el-tag v-if="scope.row.resultScore>=6" type="success"  disable-transitions>
+                通过
+              </el-tag>
+              <el-tag v-else type="danger"disable-transitions>
+                驳回
+              </el-tag>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" align="center">
             <template #default="scope">
-              <el-button type="primary" text bg size="small" @click="pushTaskInfo(scope.row)">
-                评审
-              </el-button>
               <el-button type="primary" text bg size="small" @click="routerTaskResult(scope.row)">
-                评审结果
+                查看结果
               </el-button>
             </template>
           </el-table-column>
@@ -210,57 +217,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         />
       </div>
     </el-card>
-    <!-- 新增/修改 -->
-    <el-dialog
-        v-model="dialogVisible"
-        :title="formData.id === undefined ? '新增任务' : '修改任务'"
-        width="30%"
-        @closed="resetForm"
-    >
-      <el-form ref="formRef" :model="formData" label-width="100px" label-position="left">
-        <el-form-item prop="taskName" label="任务名称">
-          <el-input v-model="formData.taskName" placeholder="请输入"/>
-        </el-form-item>
-        <el-form-item prop="account" label="抽取时间">
-          <el-date-picker
-              v-model="formData.siphonTime"
-              type="datetime"
-              placeholder="Select date and time"
-              style="width: 310px"
-              format="YYYY-MM-DD HH:mm:ss"
-              value-format="x"
-          />
-        </el-form-item>
-        <el-form-item prop="password" label="评审时间">
-          <el-date-picker
-              v-model="formData.startTime"
-              type="datetime"
-              placeholder="Select date and time"
-              style="width: 310px"
-              format="YYYY-MM-DD HH:mm:ss"
-              value-format="x"
-          />
-        </el-form-item>
-        <el-form-item prop="name" label="结束时间">
-          <el-date-picker
-              v-model="formData.endTime"
-              type="datetime"
-              placeholder="Select date and time"
-              style="width: 310px"
-              format="YYYY-MM-DD HH:mm:ss"
-              value-format="x"
-          />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate">
-          确认
-        </el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 

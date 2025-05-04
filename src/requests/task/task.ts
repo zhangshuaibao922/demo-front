@@ -8,10 +8,17 @@ export function getTableDataApi(params: Table.TableRequestData) {
         params
     })
 }
-/** 增 */
-export function createTableDataApi(data: Table.CreateOrUpdateTableRequestData) {
+export function getTableDataApiResult(params: Table.TableRequestData) {
     return service({
-        url: "/task/add",
+        url: "/task/page/result",
+        method: "get",
+        params
+    })
+}
+/** 增 */
+export function createTableDataApi(data: Table.CreateOrUpdateTableRequestData,userId:string) {
+    return service({
+        url: "/task/add/"+userId,
         method: "post",
         data
     })

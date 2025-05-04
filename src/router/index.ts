@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => LoginView,
     },
     {
+      path: '/create',
+      name: 'create',
+      component: () => import('../views/create.vue'),
+    },
+    {
       path: '/index',
       name: 'index',
       component: () => import('../views/index.vue'),
@@ -45,9 +50,19 @@ const router = createRouter({
           component: () => import('../views/taskresult.vue'),
         },
         {
+          path: '/taskresultone',
+          name: 'taskresultone',
+          component: () => import('../views/taskresultOne.vue'),
+        },
+        {
           path: '/taskone',
           name: 'taskone',
           component: () => import('../views/taskOne.vue'),
+        },
+        {
+          path: '/taskoneresult',
+          name: 'taskoneresult',
+          component: () => import('../views/taskOneResult.vue'),
         },
         {
           path: '/score',

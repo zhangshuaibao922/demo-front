@@ -88,18 +88,6 @@ const resetForm = () => {
     // 重置其他表单字段
   }
 }
-const download = async () => {
-  try {
-    await downloadExcel(taskInfo.taskInfo.id).then((res) => {
-      console.log(res.data.data)
-      window.open(res.data.data,'_blank');
-    }).catch((err) => {
-      ElMessage.error("下载失败")
-    })
-  } catch (error) {
-    ElMessage.error("下载失败")
-  }
-};
 
 // 查询评阅人
 const queryReviewers = async (query: string, callback: (data: any[]) => void) => {
@@ -150,6 +138,18 @@ const handleCreate = () => {
   
 }
 
+const download = async () => {
+  try {
+    await downloadExcel(taskInfo.taskInfo.id).then((res) => {
+      console.log(res.data.data)
+      window.open(res.data.data,'_blank');
+    }).catch((err) => {
+      ElMessage.error("下载失败")
+    })
+  } catch (error) {
+    ElMessage.error("下载失败")
+  }
+};
 function handleDelete(id: string) {
   ElMessageBox.confirm(`确认删除？`, "提示", {
     confirmButtonText: "确定",
@@ -163,7 +163,7 @@ function handleDelete(id: string) {
   })
 }
 const toTask=async ()=>{
-  router.push("/task")
+  router.push("/taskoneresult")
 }
 onMounted(async () => {
 
@@ -200,9 +200,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
     <el-card v-loading="loading" shadow="never">
       <div class="toolbar-wrapper">
         <div>
-          <el-button type="primary" :icon="CirclePlus" @click="dialogVisible = true">
-            新增用户
-          </el-button>
           <el-button type="danger" :icon="Delete" @click="deleteAll">
             批量删除
           </el-button>

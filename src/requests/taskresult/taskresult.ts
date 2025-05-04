@@ -42,3 +42,10 @@ export function addTableDataApi(taskId: string, userId: string) {
       method: "post"
     })
   }
+
+export function downloadExcel(taskId: string) {
+  return service({
+    url: `/oss/download-excel-result/${taskId}`,
+    method: "get"
+  })
+}

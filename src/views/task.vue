@@ -11,6 +11,8 @@ const router = useRouter();
 import { taskInfoStore } from '@/stores/taskInfoStore.ts';
 import dayjs from "dayjs";
 const taskInfo=taskInfoStore();
+import { useInfoStore } from '@/stores/userStore.ts';
+const userInfo = useInfoStore();
 defineOptions({
   // 命名当前组件
   name: "Table",
@@ -68,7 +70,7 @@ function handleCreateOrUpdate() {
     }
     loading.value = true
     const api =createTableDataApi ;
-    api(formData.value).then(() => {
+    api(formData.value,userInfo.user.id).then(() => {
       ElMessage.success("操作成功")
       dialogVisible.value = false
       getTableData()
