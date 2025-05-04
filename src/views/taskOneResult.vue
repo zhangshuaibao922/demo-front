@@ -35,25 +35,6 @@ const dialogVisible = ref<boolean>(false)
 const formRef = ref<FormInstance | null>(null)
 const formData = ref<CreateOrUpdateTableRequestData>(cloneDeep(DEFAULT_FORM_DATA))
 
-function handleCreateOrUpdate() {
-  console.log(formData.value)
-  formRef.value?.validate((valid) => {
-    if (!valid) {
-      ElMessage.error("表单校验不通过")
-      return
-    }
-    loading.value = true
-    const api =createTableDataApi ;
-    api(formData.value,userInfo.user.id).then(() => {
-      ElMessage.success("操作成功")
-      dialogVisible.value = false
-      getTableData()
-    }).finally(() => {
-      loading.value = false
-    })
-
-  })
-}
 
 function resetForm() {
   formRef.value?.clearValidate()

@@ -35,25 +35,6 @@ const dialogVisible = ref<boolean>(false)
 const formRef = ref<FormInstance | null>(null)
 const formData = ref<CreateOrUpdateTableRequestData>(cloneDeep(DEFAULT_FORM_DATA))
 
-function handleCreateOrUpdate() {
-  console.log(formData.value)
-  formRef.value?.validate((valid) => {
-    if (!valid) {
-      ElMessage.error("表单校验不通过")
-      return
-    }
-    loading.value = true
-    const api =createTableDataApi ;
-    api(formData.value).then(() => {
-      ElMessage.success("操作成功")
-      dialogVisible.value = false
-      getTableData()
-    }).finally(() => {
-      loading.value = false
-    })
-
-  })
-}
 
 function resetForm() {
   formRef.value?.clearValidate()
@@ -209,57 +190,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         />
       </div>
     </el-card>
-    <!-- 新增/修改 -->
-    <el-dialog
-        v-model="dialogVisible"
-        :title="formData.id === undefined ? '新增任务' : '修改任务'"
-        width="30%"
-        @closed="resetForm"
-    >
-      <el-form ref="formRef" :model="formData" label-width="100px" label-position="left">
-        <el-form-item prop="taskName" label="任务名称">
-          <el-input v-model="formData.taskName" placeholder="请输入"/>
-        </el-form-item>
-        <el-form-item prop="account" label="抽取时间">
-          <el-date-picker
-              v-model="formData.siphonTime"
-              type="datetime"
-              placeholder="Select date and time"
-              style="width: 310px"
-              format="YYYY-MM-DD HH:mm:ss"
-              value-format="x"
-          />
-        </el-form-item>
-        <el-form-item prop="password" label="评审时间">
-          <el-date-picker
-              v-model="formData.startTime"
-              type="datetime"
-              placeholder="Select date and time"
-              style="width: 310px"
-              format="YYYY-MM-DD HH:mm:ss"
-              value-format="x"
-          />
-        </el-form-item>
-        <el-form-item prop="name" label="结束时间">
-          <el-date-picker
-              v-model="formData.endTime"
-              type="datetime"
-              placeholder="Select date and time"
-              style="width: 310px"
-              format="YYYY-MM-DD HH:mm:ss"
-              value-format="x"
-          />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate">
-          确认
-        </el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
