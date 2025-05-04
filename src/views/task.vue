@@ -255,7 +255,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         </div>
       </div>
       <div class="table-wrapper">
-        <el-table :data="tableData" @selection-change="handleSelectionChange">
+        <el-table :data="tableData" @selection-change="handleSelectionChange" empty-text="暂无任务数据">
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column prop="taskName"  label="任务名称" align="center"/>
           <el-table-column prop="siphonTime" label="抽取时间" width="150" align="center" >

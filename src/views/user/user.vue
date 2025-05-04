@@ -263,7 +263,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         </div>
       </div>
       <div class="table-wrapper">
-        <el-table :data="tableData" @selection-change="handleSelectionChange">
+        <el-table :data="tableData" @selection-change="handleSelectionChange" empty-text="暂无任务数据">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column prop="name" label="姓名" align="center" />
           <el-table-column prop="account" label="账号" align="center" />

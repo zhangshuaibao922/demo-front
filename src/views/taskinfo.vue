@@ -266,7 +266,7 @@ onMounted(async ()=>{
         </div>
       </div>
       <div class="table-wrapper">
-        <el-table :data="resourceData" >
+        <el-table :data="resourceData"  empty-text="暂无任务数据">
           <el-table-column  label="任务名称" align="center">
             <template #default="scope">
               {{taskInfo.taskInfo.taskName}}

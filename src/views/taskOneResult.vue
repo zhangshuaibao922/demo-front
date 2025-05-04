@@ -164,7 +164,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         </div>
       </div>
       <div class="table-wrapper">
-        <el-table :data="tableData">
+        <el-table :data="tableData" empty-text="暂无任务数据">
           <el-table-column prop="taskName"  label="任务名称" align="center"/>
           <el-table-column prop="number" label="人数"  align="center" />
           <el-table-column prop="resultScore" label="得分"  align="center" />
