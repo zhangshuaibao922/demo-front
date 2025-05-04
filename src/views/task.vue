@@ -199,7 +199,9 @@ function handleSelectionChange(selection: TableData[]) {
 
 // #endregion
 onMounted(async () => {
-
+  if(userInfo.user.roleId!=1&&userInfo.user.roleId!=2&&userInfo.user.roleId!=3){
+  router.push("/login")
+}
 });
 // 监听分页参数的变化
 watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, {immediate: true})

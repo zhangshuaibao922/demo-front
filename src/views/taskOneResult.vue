@@ -70,7 +70,7 @@ function getTableData() {
     size: paginationData.pageSize,
     taskName: searchData.taskName || undefined,
     status: searchData.status || undefined,
-    id:userInfo.user.id
+    id:userInfo.user.roleId==1?undefined:userInfo.user.id
   }).then((res) => {
     paginationData.total = res.data.data.total
     tableData.value = res.data.data.records
@@ -125,7 +125,9 @@ function routerTaskResult(row: TableDataResult){
 }
 
 onMounted(async () => {
-
+  if(userInfo.user.roleId!=1&&userInfo.user.roleId!=2&&userInfo.user.roleId!=3){
+  router.push("/login")
+ }
 });
 // 监听分页参数的变化
 watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, {immediate: true})

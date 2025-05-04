@@ -25,7 +25,7 @@
             :default-openeds="['1', '2', '3']"
             border="false"
         >
-          <el-sub-menu index="1">
+          <el-sub-menu index="1" v-if="userInfo.user.roleId==1">
             <template #title>
               <el-icon> <Notification/></el-icon>
               <span>信息管理</span>
@@ -33,20 +33,20 @@
               <el-menu-item  @click="addTab(Tabs[0])">{{Tabs[0].title}}</el-menu-item>
               <el-menu-item @click="addTab(Tabs[1])">{{Tabs[1].title}}</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu index="2">
+          <el-sub-menu index="2" v-if="userInfo.user.roleId==1||userInfo.user.roleId==3">
             <template #title>
               <el-icon> <Notification/></el-icon>
               <span>任务管理</span>
             </template>
             <el-menu-item  @click="addTab(Tabs[2])">{{Tabs[2].title}}</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu index="3">
+          <el-sub-menu index="3" >
             <template #title>
               <el-icon> <Notification/></el-icon>
               <span>评审管理</span>
             </template>
            <el-menu-item  @click="addTab(Tabs[3])">{{Tabs[3].title}}</el-menu-item>
-           <el-menu-item  @click="addTab(Tabs[4])">{{Tabs[4].title}}</el-menu-item>
+           <el-menu-item v-if="userInfo.user.roleId==1||userInfo.user.roleId==3"   @click="addTab(Tabs[4])">{{Tabs[4].title}}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
@@ -76,10 +76,10 @@
                   <a target="_blank" href="https://github.com/un-pany/v3-admin-vite">
                     <el-dropdown-item>GitHub</el-dropdown-item>
                   </a>
-                  <!-- <a target="_blank" href="https://gitee.com/un-pany/v3-admin-vite">
+                  <a target="_blank" href="https://gitee.com/un-pany/v3-admin-vite">
                     <el-dropdown-item>Gitee</el-dropdown-item>
-                  </a> -->
-                  <el-dropdown-item divided @click="">
+                  </a>
+                  <el-dropdown-item divided @click="logOut">
                     退出登录
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -120,7 +120,8 @@
 <script lang="ts" setup>
 import Screenfull from "@/views/Screenfull/index.vue"
 import Notify from "@/views/Notify/index.vue"
-import {ref, computed, reactive} from 'vue'
+import {ref, computed, reactive, onMounted} from 'vue'
+import type {User} from "@/requests/model/user.ts"
 import {
   Expand, Fold,
   Message, Notification, UserFilled
@@ -231,6 +232,11 @@ const handleTabClick = (tabEvent:any) => {
   console.log(tab?.path);
   console.log(editableTabsValue.value);
 };
+const logOut=()=>{
+  // 清空用户信息
+  userInfo.setUserInfo({} as User);
+  router.push('/login')
+}
 
 const font = reactive({
   color: 'rgba(0, 0, 0, .15)',

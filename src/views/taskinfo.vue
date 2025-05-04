@@ -210,6 +210,10 @@ const handleCardClickTwo = async () => {
 
 // condition
 onMounted(async ()=>{
+  // #endregion
+  if(userInfo.user.roleId!=1&&userInfo.user.roleId!=2&&userInfo.user.roleId!=3){
+  router.push("/login")
+ }
   const response1=await countUsers()
   userNumber.value=response1.data.data;
   const response=await getTableDataApi(taskInfo.taskInfo.id);

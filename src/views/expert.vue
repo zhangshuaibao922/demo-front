@@ -190,6 +190,10 @@ import {
 import type {TableData} from "@/requests/expert/type.ts";
 import type {User} from "@/requests/model/user.ts";
 import {usePagination} from "@/requests/user/usePagination.ts";
+import { useInfoStore } from '@/stores/userStore.ts';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const userInfo = useInfoStore();
 const { paginationData, handleCurrentChange, handleSizeChange } = usePagination()
 const loading = ref<boolean>(false)
 const searchFormRef = ref<FormInstance | null>(null)
@@ -376,6 +380,12 @@ const querySearchAsync = async (queryString: string, cb: (arg: any) => void) => 
 const handleSelect = (item: Record<string, any>) => {
   console.log(item)
 }
+onMounted(async () => {
+
+  if(userInfo.user.roleId!=1){
+  router.push("/login")
+}
+});
 
 // 监听分页参数的变化
 watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })

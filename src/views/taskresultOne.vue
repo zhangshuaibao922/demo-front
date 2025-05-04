@@ -8,8 +8,10 @@ import {ElMessage, ElMessageBox, type FormInstance} from "element-plus";
 import {getTableDataApi,deleteAllTableDataApi,queryByName,addTableDataApi,deleteById,downloadExcel} from "@/requests/taskresult/taskresult.ts";
 import {taskInfoStore} from "@/stores/taskInfoStore.ts";
 import { useRouter } from 'vue-router';
+import { useInfoStore } from '@/stores/userStore.ts';
+const userInfo = useInfoStore();
+const router = useRouter();
 const taskInfo=taskInfoStore();
-const router=useRouter();
 defineOptions({
   // 命名当前组件
   name: "Table",
@@ -166,7 +168,9 @@ const toTask=async ()=>{
   router.push("/taskoneresult")
 }
 onMounted(async () => {
-
+  if(userInfo.user.roleId!=1&&userInfo.user.roleId!=2&&userInfo.user.roleId!=3){
+  router.push("/login")
+ }
 });
 // 监听分页参数的变化
 watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })

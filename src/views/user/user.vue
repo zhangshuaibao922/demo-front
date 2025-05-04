@@ -13,7 +13,10 @@ import { usePagination } from "@/requests/user/usePagination.ts"
 import { CirclePlus, Delete, Download, Refresh, RefreshRight, Search } from "@element-plus/icons-vue"
 import { cloneDeep } from "lodash-es"
 import {onMounted, reactive, ref, watch} from "vue";
-
+import { useInfoStore } from '@/stores/userStore.ts';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const userInfo = useInfoStore();
 defineOptions({
   // 命名当前组件
   name: "Table",
@@ -206,6 +209,10 @@ const downloadExcel = async () => {
 };
 // #endregion
 onMounted(async () => {
+
+  if(userInfo.user.roleId!=1){
+    router.push("/login")
+  }
   await getField()
   await getRole()
 });

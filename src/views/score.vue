@@ -169,6 +169,9 @@ const submitScore = async () => {
 }
 
 onMounted(async () => {
+  if(userInfo.user.roleId!=1&&userInfo.user.roleId!=2&&userInfo.user.roleId!=3){
+  router.push("/login")
+  }
   try {
     const response = await getResourceList(taskInfo.taskInfo.id)
     resourceList.value = response.data.data

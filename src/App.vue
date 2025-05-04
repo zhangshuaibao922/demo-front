@@ -25,6 +25,14 @@ console.log("<!--\n" +
     " *\n" +
     " *                               神兽保佑            永无BUG\n" +
     " -->")
+import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+import { useInfoStore } from '@/stores/userStore.ts';
+const userInfo = useInfoStore();
+const router = useRouter();
+onMounted(()=>{
+  router.push('/login')
+})
 </script>
 <style lang="scss">
 .router {
