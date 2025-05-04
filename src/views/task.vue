@@ -287,8 +287,8 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               <el-button type="primary" text bg size="small" @click="pushTaskInfo(scope.row)">
                 资源详情
               </el-button>
-              <el-button type="primary" text bg size="small" @click="routerTaskResult(scope.row)">
-                评审结果
+              <el-button type="primary" v-if="scope.row.status==3" text bg size="small" @click="routerTaskResult(scope.row)">
+                评审名单
               </el-button>
               <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)">
                 删除
