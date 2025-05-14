@@ -34,7 +34,7 @@
       <el-col :span="24">
         <el-card class="chart-card">
           <div slot="header" class="card-header">
-            <span>热门专家排行</span>
+            <span>高频抽中专家</span>
           </div>
           <div class="chart-container" ref="topExpertsRef"></div>
         </el-card>
