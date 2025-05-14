@@ -60,3 +60,11 @@ export function getUserDataApi(username: string) {
         method: "get",
     })
 }
+
+/** 获取专家领域分布数据 */
+export function getFieldUserCount() {
+    return service({
+        url: "/user/field-count",
+        method: "get"
+    })
+}

@@ -49,3 +49,11 @@ export function downloadExcel(taskId: string) {
     method: "get"
   })
 }
+
+/** 获取被抽中次数最多的前10名用户 */
+export function getTopSelectedUsers() {
+  return service({
+    url: '/taskResult/top-selected-users',
+    method: 'get'
+  })
+}

@@ -32,7 +32,7 @@ const router = createRouter({
         {
           path: '/home',
           name: 'home',
-          component: () => import('../views/home.vue'),
+          component: () => import('../views/dashboard.vue'),
         },
         {
           path: '/expert',

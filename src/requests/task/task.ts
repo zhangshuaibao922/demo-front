@@ -45,3 +45,16 @@ export function deleteTableDataApi(id: string) {
         method: "get"
     })
 }
+export function getTasksWithExpertCount() {
+    return service({
+        url: '/task/tasks-with-expert-count',
+        method: 'get'
+    })
+}
+
+export function getTaskStatusCount() {
+    return service({
+        url: '/task/status-count',
+        method: 'get'
+    })
+}
