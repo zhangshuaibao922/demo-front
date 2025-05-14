@@ -436,20 +436,37 @@ const initTopExpertsChart = () => {
     },
     grid: {
       left: '3%',
-      right: '4%',
+      right: '10%',  // 增加右侧空间
       bottom: '3%',
+      top: '15%',    // 增加顶部空间
       containLabel: true
     },
     xAxis: {
       type: 'value',
-      name: '抽取次数'
+      name: '抽取次数',
+      nameLocation: 'end',
+      nameGap: 15,
+      nameTextStyle: {
+        fontWeight: 'bold'
+      },
+      axisLabel: {
+        formatter: '{value}'
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: 'dashed'
+        }
+      }
     },
     yAxis: {
       type: 'category',
       data: userNames,
       axisLabel: {
         interval: 0,
-        rotate: 0
+        rotate: 0,
+        margin: 15,
+        fontSize: 12
       }
     },
     series: [
@@ -457,6 +474,7 @@ const initTopExpertsChart = () => {
         name: '抽取次数',
         type: 'bar',
         data: counts,
+        barWidth: '50%',
         itemStyle: {
           color: function(params: any) {
             // 根据数值大小设置不同的颜色深度
@@ -470,7 +488,10 @@ const initTopExpertsChart = () => {
         label: {
           show: true,
           position: 'right',
-          formatter: '{c}'
+          distance: 5,  // 增加标签与条形的距离
+          formatter: '{c}',
+          fontSize: 12,
+          fontWeight: 'bold'
         }
       }
     ]
