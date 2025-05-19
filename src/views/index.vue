@@ -7,11 +7,12 @@
         <!-- 图标（LOGO）始终显示 -->
         <img
             class="logo"
-            src="@/assets/logo.svg"
+            src="@/assets/Edge.png"
             alt="logo"
+            style="margin-top: 5px;"
         />
         <!-- 如果折叠了，就只显示 logo，不显示文字；如果没折叠，显示文字 -->
-        <span class="system-title" v-if="!isCollapse">V3 Admin</span>
+        <span class="system-title" v-if="!isCollapse">评审系统</span>
       </div>
 
       <!-- 菜单区域（可滚动） -->

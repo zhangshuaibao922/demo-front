@@ -71,12 +71,12 @@
         </el-form-item>
         <el-form-item>
           <el-row :gutter="20" justify="space-between" style="width: 210px">
-            <el-col :span="6"> <el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)">
+            <el-col :span="6"> <el-button type="primary" class="login-btn" @click="toLogin()">
               登录
             </el-button></el-col>
             <el-col :span="6"></el-col>
             <el-col :span="6"></el-col>
-            <el-col :span="6"><el-button type="primary" class="login-btn">
+            <el-col :span="6"><el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)">
               注册
             </el-button></el-col>
           </el-row>
@@ -128,6 +128,9 @@ const sendCode=()=>{
   sendCode_API(ruleForm.email).then((res)=>{
     ElMessage.success("验证码发送成功")
   })
+}
+const toLogin=()=>{
+  router.push('/login');
 }
 
 // 提交表单的方法
