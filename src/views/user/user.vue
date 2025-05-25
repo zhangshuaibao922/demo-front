@@ -247,21 +247,27 @@ function resetPasswordForm() {
 }
 
 // 处理修改密码
-function handleUpdatePassword() {
-  passwordFormRef.value?.validate((valid) => {
+const handleUpdatePassword=async () => {
+  passwordFormRef.value?.validate(async (valid) => {
     if (!valid) {
       ElMessage.error("表单校验不通过")
       return
     }
     loading.value = true
-    updatePasswordApi(passwordFormData.value).then(() => {
-      ElMessage.success("密码修改成功")
-      passwordDialogVisible.value = false
-    }).catch(() => {
+    try {
+      const res=await updatePasswordApi(passwordFormData.value);
+      console.log(res)
+      if(res.data.code==200){
+        ElMessage.success("密码修改成功")
+        passwordDialogVisible.value = false
+      }else{
+        ElMessage.error("密码修改失败")
+      }
+    } catch (error) {
       ElMessage.error("密码修改失败")
-    }).finally(() => {
+    } finally {
       loading.value = false
-    })
+    }
   })
 }
 
