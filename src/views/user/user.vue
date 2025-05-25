@@ -7,7 +7,8 @@ import {
   getFieldDataApi,
   getRoleDataApi,
   getTableDataApi,
-  updateTableDataApi
+  updateTableDataApi,
+  updatePasswordApi
 } from "@/requests/user"
 import { usePagination } from "@/requests/user/usePagination.ts"
 import { CirclePlus, Delete, Download, Refresh, RefreshRight, Search } from "@element-plus/icons-vue"
@@ -208,6 +209,61 @@ const downloadExcel = async () => {
   }
 };
 // #endregion
+
+// 添加修改密码相关数据
+const passwordDialogVisible = ref<boolean>(false)
+const passwordFormRef = ref<FormInstance | null>(null)
+const passwordFormData = ref({
+  id: undefined as string | undefined,
+  password: "",
+  newPassword: ""
+})
+const passwordRules = {
+  password: [
+    { required: true, message: '请输入原密码', trigger: 'blur' },
+    { min: 3, max: 10, message: '密码的长度在3-10位之间', trigger: 'blur' },
+  ],
+  newPassword: [
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { min: 3, max: 10, message: '密码的长度在3-10位之间', trigger: 'blur' },
+  ]
+};
+
+// 重置密码表单
+function resetPasswordForm() {
+  passwordFormRef.value?.clearValidate()
+  passwordFormData.value = {
+    id: undefined,
+    password: "",
+    newPassword: ""
+  }
+}
+
+// 处理修改密码
+function handleUpdatePassword() {
+  passwordFormRef.value?.validate((valid) => {
+    if (!valid) {
+      ElMessage.error("表单校验不通过")
+      return
+    }
+    loading.value = true
+    updatePasswordApi(passwordFormData.value).then(() => {
+      ElMessage.success("密码修改成功")
+      passwordDialogVisible.value = false
+    }).catch(() => {
+      ElMessage.error("密码修改失败")
+    }).finally(() => {
+      loading.value = false
+    })
+  })
+}
+
+// 打开修改密码对话框
+function openPasswordDialog(row: TableData) {
+  passwordDialogVisible.value = true
+  passwordFormData.value.id = row.id
+}
+
 onMounted(async () => {
 
   if(userInfo.user.roleId!=1){
@@ -301,10 +357,13 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="150" align="center">
+          <el-table-column fixed="right" label="操作" width="250" align="center">
             <template #default="scope">
               <el-button type="primary" text bg size="small" @click="handleUpdate(scope.row)">
-                修改
+                修改信息
+              </el-button>
+              <el-button type="warning" text bg size="small" @click="openPasswordDialog(scope.row)">
+                修改密码
               </el-button>
               <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)">
                 删除
@@ -340,7 +399,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         <el-form-item prop="account" label="账号">
           <el-input v-model="formData.account" placeholder="请输入" />
         </el-form-item>
-        <el-form-item prop="password" label="密码">
+        <el-form-item  v-if="formData.id === undefined" prop="password" label="密码">
           <el-input v-model="formData.password" placeholder="请输入" />
         </el-form-item>
         <el-form-item prop="name" label="邮箱">
@@ -378,6 +437,31 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           取消
         </el-button>
         <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate">
+          确认
+        </el-button>
+      </template>
+    </el-dialog>
+    
+    <!-- 修改密码对话框 -->
+    <el-dialog
+        v-model="passwordDialogVisible"
+        title="修改密码"
+        width="30%"
+        @closed="resetPasswordForm"
+    >
+      <el-form ref="passwordFormRef" :model="passwordFormData" label-width="100px" label-position="left" :rules="passwordRules">
+        <el-form-item prop="password" label="原密码">
+          <el-input v-model="passwordFormData.password" placeholder="请输入原密码" type="password" />
+        </el-form-item>
+        <el-form-item prop="newPassword" label="新密码">
+          <el-input v-model="passwordFormData.newPassword" placeholder="请输入新密码" type="password" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="passwordDialogVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="handleUpdatePassword">
           确认
         </el-button>
       </template>

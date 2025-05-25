@@ -189,6 +189,11 @@ const handleConditionChange = (index: number) => {
 
 const saveCondition=async ()=>{
   const res=await addCondtion(condtionformData.conditions,taskInfo.taskInfo.conditionId);
+  if(res.data.code==200){
+    ElMessage.success("保存成功");
+  }else {
+    ElMessage.error("保存失败,请稍后重试");
+  }
 }
 
 const  handleCardClickOne=async () =>{

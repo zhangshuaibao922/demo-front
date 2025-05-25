@@ -62,3 +62,12 @@ export function getExcelApi() {
     method: "get",
   })
 }
+
+/** 修改密码 */
+export function updatePasswordApi(data: { id: string | undefined, password: string, newPassword: string }) {
+  return service({
+    url: "/user/change-password",
+    method: "post",
+    data
+  })
+}
