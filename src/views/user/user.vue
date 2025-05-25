@@ -127,6 +127,13 @@ const searchData = reactive({
   fieldName: "",
   score:"",
 })
+// 添加评分选项
+const scoreOptions = [
+  { label: '优秀', value: '优秀' },
+  { label: '良好', value: '良好' },
+  { label: '一般', value: '一般' },
+  { label: '及格', value: '及格' }
+]
 function getTableData() {
   loading.value = true
   getTableDataApi({
@@ -287,7 +294,14 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-input v-model="searchData.fieldName" placeholder="请输入" />
         </el-form-item>
         <el-form-item prop="score" label="评分">
-          <el-input v-model="searchData.score" placeholder="请输入" />
+          <el-select v-model="searchData.score" placeholder="请选择评分" style="width: 150px;">
+            <el-option
+              v-for="item in scoreOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :icon="Search" @click="handleSearch">
